@@ -360,7 +360,7 @@
 
                 float bgLuminance = dot(backgroundColor, vec3(0.299, 0.587, 0.114));
                 
-                float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.5)) * 0.5 + 0.5;
+                float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.25)) * 0.5 + 0.5;
                 float r0 = mix(mix(innerRadius, 1.0, 0.4), mix(innerRadius, 1.0, 0.6), n0);
                 float d0 = distance(uv, (r0 * invLen) * uv);
                 float v0 = light1(1.0, 10.0, d0);
@@ -368,12 +368,12 @@
                 v0 *= smoothstep(r0 * 1.05, r0, len);
                 float innerFade = smoothstep(r0 * 0.8, r0 * 0.95, len);
                 v0 *= mix(innerFade, 1.0, bgLuminance * 0.7);
-                float cl = cos(ang + iTime * 2.0) * 0.5 + 0.5;
+                float cl = cos(ang + iTime * 1.0) * 0.5 + 0.5;
                 
-                float a = iTime * -1.0;
+                float a = iTime * -0.3;
                 vec2 pos = vec2(cos(a), sin(a)) * r0;
                 float d = distance(uv, pos);
-                float v1 = light2(1.5, 5.0, d);
+                float v1 = light2(1.2, 5.0, d);
                 v1 *= light1(1.0, 50.0, d0);
                 
                 float v2 = smoothstep(1.0, mix(innerRadius, 1.0, n0 * 0.5), len);
@@ -383,10 +383,10 @@
                 float fadeAmount = mix(1.0, 0.1, bgLuminance);
                 
                 vec3 darkCol = mix(color3, colBase, v0);
-                darkCol = (darkCol + v1) * v2 * v3;
+                darkCol = (darkCol + v1 * 0.7) * v2 * v3;
                 darkCol = clamp(darkCol, 0.0, 1.0);
                 
-                vec3 lightCol = (colBase + v1) * mix(1.0, v2 * v3, fadeAmount);
+                vec3 lightCol = (colBase + v1 * 0.7) * mix(1.0, v2 * v3, fadeAmount);
                 lightCol = mix(backgroundColor, lightCol, v0);
                 lightCol = clamp(lightCol, 0.0, 1.0);
                 
@@ -646,6 +646,23 @@
                 clientEl.blur();
             }
         });
+
+        // Detectar duplo espaço para editar
+        let lastSpaceTime = 0;
+        const DOUBLE_SPACE_DELAY = 400;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && e.target === document.body) {
+                const now = Date.now();
+                if (now - lastSpaceTime < DOUBLE_SPACE_DELAY) {
+                    e.preventDefault();
+                    startEdit();
+                    lastSpaceTime = 0;
+                } else {
+                    lastSpaceTime = now;
+                }
+            }
+        });
     })();
 
     // ============================================
@@ -672,4 +689,46 @@
     })();
 
     console.log('✅ Audicom Reunião carregado!');
+
+    // ============================================
+    // Cursor customizado com logo
+    // ============================================
+    (function initCustomCursor() {
+        const cursor = document.getElementById('custom-cursor');
+        if (!cursor) return;
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            // Detectar elementos clicáveis
+            const target = e.target;
+            const isClickable = target.tagName === 'A' || 
+                              target.tagName === 'BUTTON' || 
+                              target.getAttribute('contenteditable') === 'true' ||
+                              target.classList.contains('top-brand-client') ||
+                              target.closest('a, button');
+            
+            if (isClickable) {
+                cursor.classList.add('hidden');
+                document.body.style.cursor = 'pointer';
+            } else {
+                cursor.classList.remove('hidden');
+                document.body.style.cursor = 'none';
+            }
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '0.8';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+        });
+    })();
 })();
