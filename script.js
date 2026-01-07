@@ -571,5 +571,105 @@
         init();
     })();
 
+    // ============================================
+    // Hora e temperatura (Uberlandia)
+    // ============================================
+    (function initInfoPanel() {
+        const timeEl = document.getElementById('info-time');
+        const tempEl = document.getElementById('info-temp');
+        if (!timeEl || !tempEl) return;
+
+        function updateClock() {
+            const now = new Date();
+            timeEl.textContent = now.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        async function updateTemperature() {
+            try {
+                tempEl.textContent = '...';
+                const url = 'https://api.open-meteo.com/v1/forecast?latitude=-18.9186&longitude=-48.2772&current_weather=true&timezone=America%2FSao_Paulo';
+                const response = await fetch(url, { cache: 'no-store' });
+                if (!response.ok) throw new Error('Falha ao obter clima');
+                const data = await response.json();
+                const temp = data && data.current_weather && typeof data.current_weather.temperature === 'number'
+                    ? Math.round(data.current_weather.temperature)
+                    : null;
+                tempEl.textContent = temp !== null ? `${temp}°C` : '--°C';
+            } catch (err) {
+                console.warn('Erro ao atualizar temperatura:', err);
+                tempEl.textContent = '--°C';
+            }
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+        updateTemperature();
+        setInterval(updateTemperature, 10 * 60 * 1000);
+    })();
+
+    // ============================================
+    // Nome do cliente editável no topo
+    // ============================================
+    (function initClientName() {
+        const clientEl = document.getElementById('top-brand-client');
+        if (!clientEl) return;
+
+        function sanitize(text) {
+            return text.trim().replace(/\s+/g, ' ').slice(0, 60);
+        }
+
+        function startEdit() {
+            clientEl.setAttribute('contenteditable', 'true');
+            const range = document.createRange();
+            range.selectNodeContents(clientEl);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            clientEl.focus();
+        }
+
+        function finishEdit() {
+            const value = sanitize(clientEl.textContent || '');
+            clientEl.textContent = value || 'Cliente';
+            clientEl.removeAttribute('contenteditable');
+        }
+
+        clientEl.addEventListener('click', () => startEdit());
+        clientEl.addEventListener('blur', () => finishEdit());
+        clientEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                finishEdit();
+                clientEl.blur();
+            }
+        });
+    })();
+
+    // ============================================
+    // Toggle visibilidade do top brand
+    // ============================================
+    (function initTopBrandToggle() {
+        const topBrand = document.getElementById('top-brand');
+        const hideBtn = document.getElementById('top-brand-hide');
+        const showBtn = document.getElementById('top-brand-show');
+        if (!topBrand || !hideBtn || !showBtn) return;
+
+        hideBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            topBrand.classList.add('hidden');
+            setTimeout(() => {
+                showBtn.style.display = 'block';
+            }, 300);
+        });
+
+        showBtn.addEventListener('click', () => {
+            showBtn.style.display = 'none';
+            topBrand.classList.remove('hidden');
+        });
+    })();
+
     console.log('✅ Audicom Reunião carregado!');
 })();
