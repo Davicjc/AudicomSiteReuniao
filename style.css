@@ -1,0 +1,259 @@
+/**
+ * AUDICOM TELECOM - Página Reunião
+ * CSS independente
+ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Variáveis de cores */
+:root {
+    --azul-conexao: #00249C;
+    --azul-estrutura: #081535;
+    --cinza-operacional: #8F99A8;
+    --grafite-infra: #2A2F36;
+    --branco-tecnico: #F4F6F9;
+}
+
+/* Body - sem scroll */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--azul-estrutura);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Canvas de fundo - Fiber */
+#fiber-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Título Sala de Reunião */
+.titulo-sala {
+    position: fixed;
+    top: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.0rem, 5vw, 3rem);
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    text-align: center;
+    padding: 0.5em 1.5em;
+    
+    /* Gradiente animado */
+    background: linear-gradient(
+        90deg,
+        rgba(143, 153, 168, 0.5) 0%,
+        rgba(244, 246, 249, 0.9) 50%,
+        rgba(143, 153, 168, 0.5) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: textShine 10s ease-in-out infinite;
+    
+    /* Borda oval neon */
+    border: 2px solid rgba(0, 36, 156, 0.6);
+    border-radius: 100px;
+    box-shadow: 
+        0 0 10px rgba(0, 36, 156, 0.4),
+        0 0 20px rgba(0, 36, 156, 0.3),
+        0 0 40px rgba(0, 36, 156, 0.2),
+        inset 0 0 15px rgba(0, 36, 156, 0.1);
+    
+    /* Glow sutil */
+    filter: drop-shadow(0 0 20px rgba(0, 36, 156, 0.3));
+}
+
+/* Animação de pulso do neon */
+.titulo-sala::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid rgba(0, 71, 255, 0.4);
+    border-radius: 100px;
+    animation: neonPulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes neonPulse {
+    0%, 100% {
+        opacity: 0.4;
+        box-shadow: 0 0 20px rgba(0, 71, 255, 0.3);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 40px rgba(0, 71, 255, 0.6);
+    }
+}
+
+@keyframes textShine {
+    0%, 100% {
+        background-position: 0% center;
+    }
+    50% {
+        background-position: 200% center;
+    }
+}
+
+/* Container do Orb */
+#orb-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    height: 1100px;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+/* Logo Flutuante */
+.logo-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+    animation: floatLogo 6s ease-in-out infinite;
+    animation-fill-mode: both;
+    will-change: transform;
+}
+
+.logo-image {
+    width: 1200px;
+    max-width: 90vw;
+    height: auto;
+    opacity: 0.25;
+    filter: blur(0px);
+}
+
+.logo-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 1000px;
+    background: radial-gradient(
+        circle,
+        rgba(0, 36, 156, 0.4) 0%,
+        rgba(0, 36, 156, 0.2) 30%,
+        transparent 70%
+    );
+    border-radius: 50%;
+    z-index: -1;
+    animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+/* Animação de flutuação */
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translate(-50%, -50%);
+    }
+    50% {
+        transform: translate(-50%, calc(-50% - 20px));
+    }
+}
+
+/* Título Central */
+.titulo-central {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    font-size: clamp(3rem, 12vw, 8rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.titulo-audicom {
+    font-family: 'Poppins', sans-serif;
+    color: var(--branco-tecnico);
+    display: block;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+}
+
+.titulo-telecom {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.55em;
+    background: linear-gradient(135deg, var(--azul-conexao) 0%, #0047FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    align-self: flex-end;
+    margin-right: -0.5em;
+    margin-top: -0.1em;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    #orb-container {
+        width: 600px;
+        height: 600px;
+    }
+    
+    .logo-image {
+        width: 90vw;
+        opacity: 0.25;
+    }
+    
+    .logo-glow {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .titulo-central {
+        font-size: clamp(2rem, 14vw, 4rem);
+    }
+}
+
+@media (max-width: 480px) {
+    #orb-container {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .titulo-central {
+        font-size: clamp(1.8rem, 14vw, 3rem);
+    }
+}
