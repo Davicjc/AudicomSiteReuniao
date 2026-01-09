@@ -303,12 +303,11 @@ html, body {
 
 .title-telecom {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
+    font-weight: 700;
     font-size: 0.38em;
     margin-top: -0.1em;
     align-self: flex-end;
     color: var(--branco-tecnico);
-    text-transform: uppercase;
     letter-spacing: 0.15em;
 }
 
@@ -355,14 +354,20 @@ html, body {
 .wifi-qr-content {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
 }
 
-.wifi-icon {
-    width: 24px;
-    height: 24px;
-    color: var(--azul-conexao);
-    opacity: 0.9;
+.wifi-qr-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.wifi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .wifi-label {
@@ -372,6 +377,21 @@ html, body {
     color: var(--branco-tecnico);
     letter-spacing: 0.03em;
     opacity: 0.9;
+}
+
+.wifi-ssid {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--branco-tecnico);
+}
+
+.wifi-pass {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--cinza-operacional);
+    letter-spacing: 0.02em;
 }
 
 /* ==========================================
