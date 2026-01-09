@@ -95,19 +95,15 @@ a, button, [contenteditable="true"], .top-brand-client {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: textShine 10s ease-in-out infinite;
+    animation: textShine 12s ease-in-out infinite;
     
-    /* Borda oval neon */
+    /* Borda oval neon - simplificado */
     border: 2px solid rgba(0, 36, 156, 0.6);
     border-radius: 100px;
     box-shadow: 
-        0 0 10px rgba(0, 36, 156, 0.4),
-        0 0 20px rgba(0, 36, 156, 0.3),
-        0 0 40px rgba(0, 36, 156, 0.2),
-        inset 0 0 15px rgba(0, 36, 156, 0.1);
-    
-    /* Glow sutil */
-    filter: drop-shadow(0 0 20px rgba(0, 36, 156, 0.3));
+        0 0 15px rgba(0, 36, 156, 0.35),
+        inset 0 0 10px rgba(0, 36, 156, 0.1);
+    contain: layout style;
 }
 
 /* Marca superior com cliente */
@@ -121,15 +117,14 @@ a, button, [contenteditable="true"], .top-brand-client {
     gap: 10px;
     padding: 20px 24px;
     border-radius: 18px;
-    background: linear-gradient(135deg, rgba(0, 36, 156, 0.75), rgba(8, 21, 53, 0.9));
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(8px);
+    background: linear-gradient(135deg, rgba(0, 36, 156, 0.8), rgba(8, 21, 53, 0.95));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     color: var(--branco-tecnico);
     font-family: 'Space Grotesk', sans-serif;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    position: relative;
+    contain: layout style;
 }
 
 .top-brand.hidden {
@@ -199,13 +194,12 @@ a, button, [contenteditable="true"], .top-brand-client {
     top: 24px;
     left: 24px;
     z-index: 24;
-    background: rgba(8, 21, 53, 0.4);
+    background: rgba(8, 21, 53, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 8px 12px;
     color: rgba(244, 246, 249, 0.4);
     cursor: pointer;
-    backdrop-filter: blur(8px);
     transition: all 0.2s ease;
 }
 
@@ -227,11 +221,11 @@ a, button, [contenteditable="true"], .top-brand-client {
     z-index: 30;
     padding: 20px 24px;
     border-radius: 18px;
-    background: linear-gradient(135deg, rgba(0, 36, 156, 0.75), rgba(8, 21, 53, 0.9));
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    background: linear-gradient(135deg, rgba(0, 36, 156, 0.8), rgba(8, 21, 53, 0.95));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     color: var(--branco-tecnico);
     min-width: 250px;
-    backdrop-filter: blur(8px);
+    contain: layout style;
 }
 
 .info-row {
@@ -271,18 +265,19 @@ a, button, [contenteditable="true"], .top-brand-client {
     bottom: -2px;
     border: 2px solid rgba(0, 71, 255, 0.4);
     border-radius: 100px;
-    animation: neonPulse 3s ease-in-out infinite;
+    animation: neonPulse 5s ease-in-out infinite;
     pointer-events: none;
+    will-change: opacity;
 }
 
 @keyframes neonPulse {
     0%, 100% {
         opacity: 0.4;
-        box-shadow: 0 0 20px rgba(0, 71, 255, 0.3);
+        box-shadow: 0 0 15px rgba(0, 71, 255, 0.25);
     }
     50% {
         opacity: 1;
-        box-shadow: 0 0 40px rgba(0, 71, 255, 0.6);
+        box-shadow: 0 0 25px rgba(0, 71, 255, 0.45);
     }
 }
 
@@ -315,7 +310,7 @@ a, button, [contenteditable="true"], .top-brand-client {
     transform: translate(-50%, -50%);
     z-index: 2;
     pointer-events: none;
-    animation: floatLogo 6s ease-in-out infinite;
+    animation: floatLogo 8s ease-in-out infinite;
     animation-fill-mode: both;
     will-change: transform;
 }
@@ -333,17 +328,18 @@ a, button, [contenteditable="true"], .top-brand-client {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 1000px;
-    height: 1000px;
+    width: 800px;
+    height: 800px;
     background: radial-gradient(
         circle,
-        rgba(0, 36, 156, 0.4) 0%,
-        rgba(0, 36, 156, 0.2) 30%,
-        transparent 70%
+        rgba(0, 36, 156, 0.35) 0%,
+        rgba(0, 36, 156, 0.15) 35%,
+        transparent 65%
     );
     border-radius: 50%;
     z-index: -1;
-    animation: glowPulse 4s ease-in-out infinite;
+    animation: glowPulse 6s ease-in-out infinite;
+    will-change: opacity;
 }
 
 @keyframes glowPulse {
@@ -389,17 +385,18 @@ a, button, [contenteditable="true"], .top-brand-client {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 140%;
-    height: 140%;
+    width: 130%;
+    height: 130%;
     background: radial-gradient(
         ellipse,
-        rgba(8, 21, 53, 0.85) 0%,
-        rgba(8, 21, 53, 0.6) 40%,
+        rgba(8, 21, 53, 0.8) 0%,
+        rgba(8, 21, 53, 0.5) 45%,
         transparent 70%
     );
-    filter: blur(40px);
+    filter: blur(30px);
     z-index: -1;
     pointer-events: none;
+    will-change: transform;
 }
 
 .titulo-audicom {

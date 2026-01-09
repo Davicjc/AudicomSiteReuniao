@@ -2,10 +2,18 @@
  * AUDICOM TELECOM - Página Reunião
  * Script independente com efeitos de fundo
  * Fiber Canvas + Orb WebGL
+ * OTIMIZADO para performance
  */
 
 (function() {
     'use strict';
+
+    // ============================================
+    // CONTROLE DE FPS E PERFORMANCE
+    // ============================================
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     // ============================================
     // CORES DA MARCA
@@ -19,26 +27,29 @@
     };
 
     // ============================================
-    // FIBER CANVAS - Animação de fibra ótica
+    // FIBER CANVAS - Animação de fibra ótica (OTIMIZADO)
     // ============================================
     (function initFiberCanvas() {
         const canvas = document.getElementById('fiber-canvas');
         if (!canvas) return;
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { alpha: false });
         let width, height;
         let particles = [];
         let animationId;
-        let lastTime = 0;
+        let lastFrameTime = 0;
+        let connectionCache = [];
+        let cacheValid = false;
 
-        const isMobile = window.innerWidth <= 768;
         const SETTINGS = {
-            particleCount: isMobile ? 30 : 80,
-            connectionDistance: 150,
-            particleSpeed: 0.3,
-            flowSpeed: 0.002,
-            glowIntensity: 0.8
+            particleCount: isMobile ? 15 : 40,
+            connectionDistance: isMobile ? 100 : 130,
+            particleSpeed: 0.25,
+            flowSpeed: 0.0015,
+            skipFrames: isMobile ? 2 : 1,
+            cacheUpdateInterval: 5
         };
+        let frameCounter = 0;
 
         function resizeCanvas() {
             width = canvas.width = window.innerWidth;
@@ -97,109 +108,116 @@
             }
         }
 
-        function drawConnections() {
+        function updateConnectionCache() {
+            connectionCache = [];
+            const distSq = SETTINGS.connectionDistance * SETTINGS.connectionDistance;
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < SETTINGS.connectionDistance) {
-                        const opacity = (1 - distance / SETTINGS.connectionDistance) * 0.3;
-                        
-                        const gradient = ctx.createLinearGradient(
-                            particles[i].x, particles[i].y,
-                            particles[j].x, particles[j].y
-                        );
-                        
-                        gradient.addColorStop(0, `rgba(0, 36, 156, ${opacity})`);
-                        gradient.addColorStop(0.5, `rgba(143, 153, 168, ${opacity * 0.5})`);
-                        gradient.addColorStop(1, `rgba(0, 36, 156, ${opacity})`);
-
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = gradient;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < distSq) {
+                        connectionCache.push({ i, j, d: Math.sqrt(d2) });
                     }
                 }
             }
+        }
+
+        function drawConnections() {
+            if (connectionCache.length === 0) return;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            for (let c = 0; c < connectionCache.length; c++) {
+                const conn = connectionCache[c];
+                const p1 = particles[conn.i];
+                const p2 = particles[conn.j];
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+            }
+            ctx.strokeStyle = 'rgba(0, 36, 156, 0.2)';
+            ctx.stroke();
         }
 
         function drawDataFlow(time) {
+            if (connectionCache.length === 0) return;
             const flowProgress = (time * SETTINGS.flowSpeed) % 1;
-
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < SETTINGS.connectionDistance * 0.7) {
-                        const progress = (flowProgress + (i + j) * 0.1) % 1;
-                        const flowX = particles[i].x + (particles[j].x - particles[i].x) * progress;
-                        const flowY = particles[i].y + (particles[j].y - particles[i].y) * progress;
-
-                        const packetOpacity = (1 - distance / SETTINGS.connectionDistance) * 0.8;
-                        const packetSize = 1.5;
-
-                        ctx.beginPath();
-                        ctx.arc(flowX, flowY, packetSize, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(0, 36, 156, ${packetOpacity})`;
-                        ctx.fill();
-
-                        ctx.beginPath();
-                        ctx.arc(flowX, flowY, packetSize * 3, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(0, 36, 156, ${packetOpacity * 0.2})`;
-                        ctx.fill();
-                    }
-                }
+            const maxFlows = Math.min(connectionCache.length, isMobile ? 8 : 20);
+            
+            ctx.fillStyle = 'rgba(0, 36, 156, 0.5)';
+            ctx.beginPath();
+            for (let c = 0; c < maxFlows; c++) {
+                const conn = connectionCache[c];
+                const p1 = particles[conn.i];
+                const p2 = particles[conn.j];
+                const progress = (flowProgress + c * 0.15) % 1;
+                const flowX = p1.x + (p2.x - p1.x) * progress;
+                const flowY = p1.y + (p2.y - p1.y) * progress;
+                ctx.moveTo(flowX + 1.5, flowY);
+                ctx.arc(flowX, flowY, 1.5, 0, Math.PI * 2);
             }
+            ctx.fill();
         }
 
+        let scanGradient = null;
         function drawScanLine(time) {
             const scanY = (Math.sin(time * 0.0005) + 1) * 0.5 * height;
             const scanWidth = 100;
-
-            const gradient = ctx.createLinearGradient(0, scanY - scanWidth, 0, scanY + scanWidth);
-            gradient.addColorStop(0, 'rgba(0, 36, 156, 0)');
-            gradient.addColorStop(0.5, 'rgba(0, 36, 156, 0.05)');
-            gradient.addColorStop(1, 'rgba(0, 36, 156, 0)');
-
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, scanY - scanWidth, width, scanWidth * 2);
+            if (!scanGradient) {
+                scanGradient = ctx.createLinearGradient(0, 0, 0, 200);
+                scanGradient.addColorStop(0, 'rgba(0, 36, 156, 0)');
+                scanGradient.addColorStop(0.5, 'rgba(0, 36, 156, 0.04)');
+                scanGradient.addColorStop(1, 'rgba(0, 36, 156, 0)');
+            }
+            ctx.save();
+            ctx.translate(0, scanY - scanWidth);
+            ctx.fillStyle = scanGradient;
+            ctx.fillRect(0, 0, width, scanWidth * 2);
+            ctx.restore();
         }
 
         function animate(timestamp) {
-            const deltaTime = timestamp - lastTime;
-            lastTime = timestamp;
+            animationId = requestAnimationFrame(animate);
+            
+            const elapsed = timestamp - lastFrameTime;
+            if (elapsed < FRAME_INTERVAL) return;
+            lastFrameTime = timestamp - (elapsed % FRAME_INTERVAL);
 
-            ctx.fillStyle = 'rgba(8, 21, 53, 0.1)';
+            frameCounter++;
+            
+            ctx.fillStyle = 'rgba(8, 21, 53, 0.12)';
             ctx.fillRect(0, 0, width, height);
 
-            drawScanLine(timestamp);
+            if (frameCounter % 3 === 0) drawScanLine(timestamp);
 
-            particles.forEach(particle => {
-                particle.update(timestamp);
-            });
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(timestamp);
+            }
+
+            if (frameCounter % SETTINGS.cacheUpdateInterval === 0) {
+                updateConnectionCache();
+            }
 
             drawConnections();
-            drawDataFlow(timestamp);
+            if (frameCounter % 2 === 0) drawDataFlow(timestamp);
 
-            particles.forEach(particle => {
-                particle.draw();
-            });
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].draw();
+            }
+        }
 
-            animationId = requestAnimationFrame(animate);
+        let resizeTimeout;
+        function debouncedResize() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(resizeCanvas, 150);
         }
 
         function init() {
             resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+            window.addEventListener('resize', debouncedResize);
             
             ctx.fillStyle = COLORS.azulEstrutura;
             ctx.fillRect(0, 0, width, height);
+            updateConnectionCache();
             
             requestAnimationFrame(animate);
         }
@@ -208,13 +226,11 @@
     })();
 
     // ============================================
-    // ORB - Esfera fluida WebGL
+    // ORB - Esfera fluida WebGL (OTIMIZADO)
     // ============================================
     (function initOrb() {
-        const isMobile = window.innerWidth <= 768;
-        
         const CONFIG = {
-            size: isMobile ? 600 : 1100,
+            size: isMobile ? 500 : 900,
             color1: '#0032D6',
             color2: '#00165E',
             color3: '#001D7D',
@@ -225,6 +241,8 @@
             forceHoverState: false,
             backgroundColor: '#000000'
         };
+        
+        let orbLastFrameTime = 0;
 
         function hexToRgb(hex) {
             hex = hex.replace('#', '');
@@ -497,7 +515,7 @@
 
         function resize() {
             const container = canvas.parentElement;
-            const dpr = Math.min(window.devicePixelRatio, 2);
+            const dpr = Math.min(window.devicePixelRatio, isMobile ? 1 : 1.5);
             const width = container.offsetWidth;
             const height = container.offsetHeight;
             canvas.width = width * dpr;
@@ -525,10 +543,47 @@
             }
         }
 
+        // Cache uniform locations
+        let uniforms = null;
+        function cacheUniforms() {
+            uniforms = {
+                iTime: gl.getUniformLocation(program, 'iTime'),
+                iResolution: gl.getUniformLocation(program, 'iResolution'),
+                hue: gl.getUniformLocation(program, 'hue'),
+                hover: gl.getUniformLocation(program, 'hover'),
+                rot: gl.getUniformLocation(program, 'rot'),
+                hoverIntensity: gl.getUniformLocation(program, 'hoverIntensity'),
+                backgroundColor: gl.getUniformLocation(program, 'backgroundColor'),
+                baseColor1: gl.getUniformLocation(program, 'baseColor1'),
+                baseColor2: gl.getUniformLocation(program, 'baseColor2'),
+                baseColor3: gl.getUniformLocation(program, 'baseColor3')
+            };
+        }
+        
+        // Pre-compute colors
+        let cachedColors = null;
+        function cacheColors() {
+            cachedColors = {
+                bg: hexToRgb(CONFIG.backgroundColor),
+                c1: hexToRgb(CONFIG.color1),
+                c2: hexToRgb(CONFIG.color2),
+                c3: hexToRgb(CONFIG.color3)
+            };
+        }
+
         function render(time) {
+            animationId = requestAnimationFrame(render);
+            
+            const elapsed = time - orbLastFrameTime;
+            if (elapsed < FRAME_INTERVAL) return;
+            orbLastFrameTime = time - (elapsed % FRAME_INTERVAL);
+
             const t = time * 0.001;
             const dt = t - lastTime;
             lastTime = t;
+
+            if (!uniforms) cacheUniforms();
+            if (!cachedColors) cacheColors();
 
             let effectiveHover = 0;
             if (CONFIG.mouseEffect) {
@@ -546,26 +601,19 @@
             gl.clear(gl.COLOR_BUFFER_BIT);
 
             gl.useProgram(program);
-
-            const bgRgb = hexToRgb(CONFIG.backgroundColor);
-            const color1Rgb = hexToRgb(CONFIG.color1);
-            const color2Rgb = hexToRgb(CONFIG.color2);
-            const color3Rgb = hexToRgb(CONFIG.color3);
             
-            gl.uniform1f(gl.getUniformLocation(program, 'iTime'), t);
-            gl.uniform3f(gl.getUniformLocation(program, 'iResolution'), canvas.width, canvas.height, canvas.width / canvas.height);
-            gl.uniform1f(gl.getUniformLocation(program, 'hue'), CONFIG.hue);
-            gl.uniform1f(gl.getUniformLocation(program, 'hover'), currentHover);
-            gl.uniform1f(gl.getUniformLocation(program, 'rot'), currentRot);
-            gl.uniform1f(gl.getUniformLocation(program, 'hoverIntensity'), CONFIG.hoverIntensity);
-            gl.uniform3f(gl.getUniformLocation(program, 'backgroundColor'), bgRgb[0], bgRgb[1], bgRgb[2]);
-            gl.uniform3f(gl.getUniformLocation(program, 'baseColor1'), color1Rgb[0], color1Rgb[1], color1Rgb[2]);
-            gl.uniform3f(gl.getUniformLocation(program, 'baseColor2'), color2Rgb[0], color2Rgb[1], color2Rgb[2]);
-            gl.uniform3f(gl.getUniformLocation(program, 'baseColor3'), color3Rgb[0], color3Rgb[1], color3Rgb[2]);
+            gl.uniform1f(uniforms.iTime, t);
+            gl.uniform3f(uniforms.iResolution, canvas.width, canvas.height, canvas.width / canvas.height);
+            gl.uniform1f(uniforms.hue, CONFIG.hue);
+            gl.uniform1f(uniforms.hover, currentHover);
+            gl.uniform1f(uniforms.rot, currentRot);
+            gl.uniform1f(uniforms.hoverIntensity, CONFIG.hoverIntensity);
+            gl.uniform3f(uniforms.backgroundColor, cachedColors.bg[0], cachedColors.bg[1], cachedColors.bg[2]);
+            gl.uniform3f(uniforms.baseColor1, cachedColors.c1[0], cachedColors.c1[1], cachedColors.c1[2]);
+            gl.uniform3f(uniforms.baseColor2, cachedColors.c2[0], cachedColors.c2[1], cachedColors.c2[2]);
+            gl.uniform3f(uniforms.baseColor3, cachedColors.c3[0], cachedColors.c3[1], cachedColors.c3[2]);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-            animationId = requestAnimationFrame(render);
         }
 
         init();
