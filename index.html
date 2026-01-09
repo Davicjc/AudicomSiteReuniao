@@ -5,69 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audicom Telecom - Reunião</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Fontes otimizadas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Montserrat:wght@500&family=Poppins:wght@700&family=Space+Grotesk:wght@600;700&display=swap&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@500;600&family=Poppins:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Cursor customizado -->
-    <div class="custom-cursor" id="custom-cursor">
-        <img src="assets/biglogo.png" alt="">
-    </div>
-
-    <!-- Canvas de fundo - Fiber Animation -->
+    <!-- Fundo animado -->
     <canvas id="fiber-canvas"></canvas>
-    
-    <!-- Container do Orb -->
     <div id="orb-container"></div>
 
-    <!-- Marca topo com cliente -->
-    <div class="top-brand" id="top-brand">
-        <span class="top-brand-main">audıcom</span>
-        <span class="top-brand-plus">&</span>
-        <span class="top-brand-client" id="top-brand-client" title="Clique para editar">Cliente</span>
-        <button class="top-brand-hide" id="top-brand-hide" title="Ocultar">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-        </button>
-    </div>
+    <!-- ========== LAYOUT PRINCIPAL ========== -->
     
-    <!-- Seta para mostrar novamente -->
-    <button class="top-brand-show" id="top-brand-show" title="Mostrar" style="display: none;">
-        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1L7 8L13 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </button>
-    
-    <!-- Título Sala de Reunião -->
-    <h2 class="titulo-sala">Sala de Reunião</h2>
-    
-    <!-- Logo Flutuante -->
-    <div class="logo-container">
-        <img src="assets/biglogo.png" alt="Audicom Telecom" class="logo-image">
-        <div class="logo-glow"></div>
-    </div>
-    
-    <!-- Título -->
-    <h1 class="titulo-central">
-        <span class="titulo-backdrop"></span>
-        <span class="titulo-audicom">audıcom</span>
-        <span class="titulo-telecom">telecom</span>
-    </h1>
-
-    <!-- Hora e temperatura -->
-    <div class="info-panel">
-        <div class="info-row">
-            <span class="info-label">Uberlândia</span>
-            <span class="info-value" id="info-temp">--°C</span>
+    <!-- TOPO: Info Panel (hora, temp, cliente) -->
+    <header class="header-bar">
+        <div class="header-left">
+            <span class="header-client" id="top-brand-client" title="Clique para editar o nome">Cliente</span>
+            <span class="room-status available" id="room-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Sala Disponível</span>
+            </span>
         </div>
-        <div class="info-time" id="info-time">--:--</div>
+        <div class="header-center">
+            <span class="header-date" id="header-date"></span>
+        </div>
+        <div class="header-right">
+            <span class="header-temp" id="info-temp">--°C</span>
+            <span class="header-time" id="info-time">--:--</span>
+        </div>
+    </header>
+
+    <!-- CENTRO: Logo grande de fundo + Título sobreposto (igual ao site principal) -->
+    <main class="main-content">
+        <!-- Logo grande de fundo com glow -->
+        <div class="hero-bg-logo">
+            <img src="assets/biglogo.png" alt="" class="hero-bg-image">
+            <div class="hero-bg-glow"></div>
+        </div>
+        
+        <!-- Título centralizado sobre a logo -->
+        <h1 class="hero-title-centered">
+            <span class="titulo-backdrop"></span>
+            <span class="title-line title-audicom">audıcom</span>
+            <span class="title-line title-telecom">telecom</span>
+        </h1>
+    </main>
+
+    <!-- QR Code Wi-Fi (canto inferior esquerdo) -->
+    <div class="wifi-qr" id="wifi-qr" title="Escaneie para conectar ao Wi-Fi">
+        <div class="wifi-qr-content">
+            <svg class="wifi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                <circle cx="12" cy="20" r="1"></circle>
+            </svg>
+            <span class="wifi-label">Wi-Fi Visitantes</span>
+        </div>
     </div>
 
-    <!-- Assinatura -->
-    <a href="https://davicjc.github.io/PortfolioPessoal" target="_blank" rel="noopener noreferrer" class="signature">by davicjc</a>
+    <!-- RODAPÉ: Carrossel de clientes -->
+    <footer class="footer-clients">
+        <span class="clients-label">Empresas que confiam na Audicom</span>
+        <div class="clients-wrapper">
+            <div class="clients-track" id="clients-track">
+                <!-- Logos serão inseridos via JS -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Assinatura discreta -->
+    <a href="https://davicjc.github.io/PortfolioPessoal" target="_blank" class="signature">by davicjc</a>
+
+    <!-- Menu de Configuração (ESPAÇO 2x) -->
+    <div class="config-menu" id="config-menu">
+        <div class="config-menu-header">
+            <span class="config-menu-title">Configurações</span>
+            <button class="config-menu-close" id="config-menu-close">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="config-menu-body">
+            <label class="config-option">
+                <input type="checkbox" id="config-logo" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Logo Central</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-titulo" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Título</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-clientes" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Carrossel de Clientes</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-header" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Barra Superior</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-orb" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Orb 3D</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-fiber" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Partículas</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-status" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Status da Sala</span>
+            </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-wifi" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Wi-Fi QR</span>
+            </label>
+        </div>
+        <div class="config-menu-footer">
+            <span class="config-hint">ESPAÇO 2x para abrir/fechar</span>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

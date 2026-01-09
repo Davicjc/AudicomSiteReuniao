@@ -1,35 +1,39 @@
 /**
  * AUDICOM TELECOM - Página Reunião
- * CSS independente
+ * Design profissional para TV em sala de reunião
  */
 
-/* Reset básico */
+/* ==========================================
+   RESET & VARIÁVEIS
+   ========================================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Variáveis de cores */
 :root {
     --azul-conexao: #00249C;
     --azul-estrutura: #081535;
+    --azul-claro: #0d2b6b;
     --cinza-operacional: #8F99A8;
     --grafite-infra: #2A2F36;
     --branco-tecnico: #F4F6F9;
+    --branco-soft: rgba(244, 246, 249, 0.9);
 }
 
-/* Body - sem scroll */
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: var(--azul-estrutura);
+    background: linear-gradient(135deg, var(--azul-estrutura) 0%, #0a1a3a 100%);
     font-family: 'Inter', sans-serif;
-    cursor: none;
+    color: var(--branco-tecnico);
 }
 
-/* Canvas de fundo - Fiber */
+/* ==========================================
+   FUNDOS ANIMADOS
+   ========================================== */
 #fiber-canvas {
     position: fixed;
     top: 0;
@@ -38,496 +42,666 @@ html, body {
     height: 100%;
     z-index: 0;
     pointer-events: none;
-}
-
-/* Cursor customizado */
-.custom-cursor {
-    position: fixed;
-    width: 32px;
-    height: 32px;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%) rotate(-15deg);
-    opacity: 0.8;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.custom-cursor.hidden {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(-15deg) scale(0.5);
-}
-
-.custom-cursor img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-/* Elementos clicáveis mostram cursor padrão */
-a, button, [contenteditable="true"], .top-brand-client {
-    cursor: pointer;
-}
-
-/* Título Sala de Reunião */
-.titulo-sala {
-    position: fixed;
-    top: 90%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(1.0rem, 5vw, 3rem);
-    font-weight: 300;
-    text-transform: uppercase;
-    letter-spacing: 0.4em;
-    text-align: center;
-    padding: 0.5em 1.5em;
-    
-    /* Gradiente animado */
-    background: linear-gradient(
-        90deg,
-        rgba(143, 153, 168, 0.5) 0%,
-        rgba(244, 246, 249, 0.9) 50%,
-        rgba(143, 153, 168, 0.5) 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: textShine 12s ease-in-out infinite;
-    
-    /* Borda oval neon - simplificado */
-    border: 2px solid rgba(0, 36, 156, 0.6);
-    border-radius: 100px;
-    box-shadow: 
-        0 0 15px rgba(0, 36, 156, 0.35),
-        inset 0 0 10px rgba(0, 36, 156, 0.1);
-    contain: layout style;
-}
-
-/* Marca superior com cliente */
-.top-brand {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    z-index: 25;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 20px 24px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, rgba(0, 36, 156, 0.8), rgba(8, 21, 53, 0.95));
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    color: var(--branco-tecnico);
-    font-family: 'Space Grotesk', sans-serif;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    contain: layout style;
-}
-
-.top-brand.hidden {
-    opacity: 0;
-    transform: translateX(-20px);
-    pointer-events: none;
-}
-
-.top-brand-main {
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.top-brand-plus {
-    font-size: 1.1rem;
-    opacity: 0.7;
-}
-
-.top-brand-client {
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 10px;
-    background: rgba(0, 36, 156, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    cursor: pointer;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.top-brand-client:hover {
-    background: rgba(0, 36, 156, 0.7);
-    box-shadow: 0 0 12px rgba(0, 71, 255, 0.35);
-}
-
-.top-brand-client:focus {
-    outline: 2px solid rgba(0, 71, 255, 0.8);
-    outline-offset: 2px;
-    background: rgba(0, 36, 156, 0.85);
-}
-
-.top-brand-hide {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: none;
-    border: none;
-    color: rgba(244, 246, 249, 0.15);
-    cursor: pointer;
-    padding: 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-}
-
-.top-brand:hover .top-brand-hide {
     opacity: 1;
 }
 
-.top-brand-hide:hover {
-    color: rgba(244, 246, 249, 0.6);
-}
-
-.top-brand-show {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    z-index: 24;
-    background: rgba(8, 21, 53, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 8px 12px;
-    color: rgba(244, 246, 249, 0.4);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.top-brand-show:hover {
-    background: rgba(8, 21, 53, 0.6);
-    color: rgba(244, 246, 249, 0.8);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.top-brand-show svg {
-    transform: rotate(-90deg);
-}
-
-/* Painel de hora e temperatura */
-.info-panel {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 30;
-    padding: 20px 24px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, rgba(0, 36, 156, 0.8), rgba(8, 21, 53, 0.95));
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    color: var(--branco-tecnico);
-    min-width: 250px;
-    contain: layout style;
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.15rem;
-    letter-spacing: 0.03em;
-}
-
-.info-label {
-    color: rgba(244, 246, 249, 0.85);
-    font-weight: 500;
-}
-
-.info-value {
-    font-weight: 700;
-    font-size: 1.35rem;
-}
-
-.info-time {
-    margin-top: 6px;
-    text-align: right;
-    font-size: 2.3rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-}
-
-/* Animação de pulso do neon */
-.titulo-sala::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border: 2px solid rgba(0, 71, 255, 0.4);
-    border-radius: 100px;
-    animation: neonPulse 5s ease-in-out infinite;
-    pointer-events: none;
-    will-change: opacity;
-}
-
-@keyframes neonPulse {
-    0%, 100% {
-        opacity: 0.4;
-        box-shadow: 0 0 15px rgba(0, 71, 255, 0.25);
-    }
-    50% {
-        opacity: 1;
-        box-shadow: 0 0 25px rgba(0, 71, 255, 0.45);
-    }
-}
-
-@keyframes textShine {
-    0%, 100% {
-        background-position: 0% center;
-    }
-    50% {
-        background-position: 200% center;
-    }
-}
-
-/* Container do Orb */
 #orb-container {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 1100px;
-    height: 1100px;
-    z-index: 1;
-    pointer-events: auto;
-}
-
-/* Logo Flutuante */
-.logo-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
+    width: clamp(400px, 50vw, 700px);
+    height: clamp(400px, 50vw, 700px);
+    z-index: 3;
     pointer-events: none;
-    animation: floatLogo 8s ease-in-out infinite;
-    animation-fill-mode: both;
-    will-change: transform;
 }
 
-.logo-image {
-    width: 1200px;
-    max-width: 90vw;
-    height: auto;
-    opacity: 0.25;
-    filter: blur(0px);
+/* ==========================================
+   HEADER BAR (TOPO)
+   ========================================== */
+.header-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: rgba(8, 21, 53, 0.3);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.logo-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(
-        circle,
-        rgba(0, 36, 156, 0.35) 0%,
-        rgba(0, 36, 156, 0.15) 35%,
-        transparent 65%
-    );
+.header-left,
+.header-center,
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-center {
+    flex: 1;
+    justify-content: center;
+}
+
+.header-right {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Status da Sala */
+.room-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.room-status.available {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+}
+
+.room-status.busy {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    z-index: -1;
-    animation: glowPulse 6s ease-in-out infinite;
-    will-change: opacity;
+    background: currentColor;
+    animation: statusPulse 2s ease-in-out infinite;
 }
 
-@keyframes glowPulse {
-    0%, 100% {
-        opacity: 0.8;
-        transform: translate(-50%, -50%) scale(1);
-    }
-    50% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.05);
-    }
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
 }
 
-/* Animação de flutuação */
-@keyframes floatLogo {
-    0%, 100% {
-        transform: translate(-50%, -50%);
-    }
-    50% {
-        transform: translate(-50%, calc(-50% - 20px));
-    }
+.status-text {
+    white-space: nowrap;
 }
 
-/* Título Central */
-.titulo-central {
+.header-client {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--branco-soft);
+    padding: 6px 16px;
+    background: rgba(0, 36, 156, 0.3);
+    border: 1px solid rgba(0, 36, 156, 0.4);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.header-client:hover {
+    background: rgba(0, 36, 156, 0.5);
+    border-color: rgba(0, 36, 156, 0.6);
+}
+
+.header-client:focus {
+    border-color: var(--azul-conexao);
+    box-shadow: 0 0 0 2px rgba(0, 36, 156, 0.3);
+}
+
+.header-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--cinza-operacional);
+    letter-spacing: 0.02em;
+}
+
+.header-temp,
+.header-time {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+}
+
+.header-temp {
+    font-size: 0.95rem;
+    color: var(--cinza-operacional);
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.header-time {
+    font-size: 1.6rem;
+    color: var(--branco-tecnico);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================
+   MAIN CONTENT (CENTRO) - Estilo igual ao site principal
+   ========================================== */
+.main-content {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    font-size: clamp(3rem, 12vw, 8rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Logo grande de fundo */
+.hero-bg-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+    animation: floatLogo 6s ease-in-out infinite;
+    will-change: transform;
+}
+
+@keyframes floatLogo {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, calc(-50% - 15px)); }
+}
+
+.hero-bg-image {
+    width: clamp(400px, 50vw, 700px);
+    height: auto;
+    opacity: 0.25;
+    filter: blur(0px);
+}
+
+.hero-bg-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(350px, 45vw, 650px);
+    height: clamp(350px, 45vw, 650px);
+    background: radial-gradient(
+        circle,
+        rgba(0, 36, 156, 0.4) 0%,
+        rgba(0, 36, 156, 0.2) 30%,
+        transparent 70%
+    );
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/* Título centralizado exatamente na logo */
+.hero-title-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
     font-weight: 700;
     line-height: 0.95;
     letter-spacing: -0.02em;
     text-align: center;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Backdrop blur atrás do título */
 .titulo-backdrop {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 130%;
-    height: 130%;
+    inset: -30px -50px;
     background: radial-gradient(
-        ellipse,
+        ellipse at center,
         rgba(8, 21, 53, 0.8) 0%,
-        rgba(8, 21, 53, 0.5) 45%,
-        transparent 70%
+        rgba(8, 21, 53, 0.5) 50%,
+        transparent 80%
     );
     filter: blur(30px);
     z-index: -1;
     pointer-events: none;
-    will-change: transform;
 }
 
-.titulo-audicom {
-    font-family: 'Poppins', sans-serif;
-    color: var(--branco-tecnico);
+.title-line {
     display: block;
+}
+
+.title-audicom {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--branco-tecnico);
     -webkit-text-stroke: 0;
     text-shadow: none;
 }
 
-.titulo-telecom {
+.title-telecom {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: 0.55em;
-    color: var(--branco-tecnico);
-    display: block;
-    align-self: flex-end;
-    margin-right: -0.00em;
+    font-size: 0.38em;
     margin-top: -0.1em;
+    align-self: flex-end;
+    color: var(--branco-tecnico);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
 }
 
-/* Assinatura discreta */
+/* Tagline animada */
+.tagline-animated {
+    position: absolute;
+    bottom: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+    font-weight: 400;
+    color: var(--cinza-operacional);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    white-space: nowrap;
+    transition: opacity 0.5s ease;
+}
+
+/* ==========================================
+   WI-FI QR CODE
+   ========================================== */
+.wifi-qr {
+    position: fixed;
+    bottom: 90px;
+    left: 30px;
+    z-index: 50;
+    padding: 12px 18px;
+    background: rgba(8, 21, 53, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wifi-qr:hover {
+    background: rgba(8, 21, 53, 0.9);
+    border-color: rgba(0, 50, 214, 0.4);
+    transform: translateY(-2px);
+}
+
+.wifi-qr-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wifi-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--azul-conexao);
+    opacity: 0.9;
+}
+
+.wifi-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--branco-tecnico);
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+}
+
+/* ==========================================
+   FOOTER CLIENTS (RODAPÉ) - Barra estilo header
+   ========================================== */
+.footer-clients {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 0 40px;
+    background: rgba(8, 21, 53, 0.3);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clients-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--branco-tecnico);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    z-index: 5;
+    padding: 8px 16px;
+    background: rgba(0, 50, 214, 0.2);
+    border: 1px solid rgba(0, 50, 214, 0.3);
+    border-radius: 6px;
+}
+
+.clients-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 10%,
+        black 90%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 10%,
+        black 90%,
+        transparent 100%
+    );
+}
+
+.clients-track {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    animation: scrollClients 80s linear infinite;
+    width: max-content;
+    padding: 0 20px;
+}
+
+@keyframes scrollClients {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.client-logo {
+    height: 32px;
+    width: auto;
+    opacity: 1;
+    filter: brightness(1.1);
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   SIGNATURE
+   ========================================== */
 .signature {
     position: fixed;
-    bottom: 16px;
-    right: 16px;
-    z-index: 5;
+    bottom: 10px;
+    right: 20px;
+    z-index: 50;
     font-family: 'Inter', sans-serif;
     font-size: 0.65rem;
-    font-weight: 400;
-    color: rgba(143, 153, 168, 0.25);
-    letter-spacing: 0.05em;
+    color: rgba(143, 153, 168, 0.4);
     text-decoration: none;
-    cursor: pointer;
+    letter-spacing: 0.05em;
     transition: color 0.3s ease;
 }
 
 .signature:hover {
-    color: rgba(143, 153, 168, 0.5);
+    color: rgba(143, 153, 168, 0.8);
 }
 
-/* Responsivo */
+/* ==========================================
+   CONFIG MENU
+   ========================================== */
+.config-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    z-index: 1000;
+    width: 320px;
+    background: rgba(8, 21, 53, 0.95);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(0, 36, 156, 0.3);
+    border-radius: 16px;
+    box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.config-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.config-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.config-menu-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--branco-tecnico);
+    letter-spacing: 0.02em;
+}
+
+.config-menu-close {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 6px;
+    color: var(--cinza-operacional);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.config-menu-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--branco-tecnico);
+}
+
+.config-menu-body {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.config-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.config-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.config-option input[type="checkbox"] {
+    display: none;
+}
+
+.config-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(143, 153, 168, 0.4);
+    border-radius: 5px;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.config-option input[type="checkbox"]:checked + .config-checkbox {
+    background: var(--azul-conexao);
+    border-color: var(--azul-conexao);
+}
+
+.config-option input[type="checkbox"]:checked + .config-checkbox::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    width: 5px;
+    height: 9px;
+    border: solid var(--branco-tecnico);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.config-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--branco-soft);
+}
+
+.config-menu-footer {
+    padding: 14px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+}
+
+.config-hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: var(--cinza-operacional);
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================
+   ESTADOS OCULTOS
+   ========================================== */
+.hidden {
+    display: none !important;
+}
+
+.header-bar.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    display: flex !important;
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+.footer-clients.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    display: block !important;
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 1200px) {
+    .header-bar {
+        padding: 0 30px;
+    }
+    
+    .clients-track {
+        gap: 50px;
+    }
+    
+    .client-logo {
+        height: 35px;
+    }
+}
+
 @media (max-width: 768px) {
-    #orb-container {
-        width: 600px;
-        height: 600px;
+    .header-bar {
+        height: 50px;
+        padding: 0 20px;
     }
     
-    .logo-image {
-        width: 90vw;
-        opacity: 0.25;
+    .header-date {
+        display: none;
     }
     
-    .logo-glow {
-        width: 400px;
-        height: 400px;
+    .header-time {
+        font-size: 1.3rem;
     }
     
-    .titulo-central {
-        font-size: clamp(2rem, 14vw, 4rem);
-    }
-
-    .top-brand {
-        top: 16px;
-        left: 16px;
-        gap: 8px;
-        padding: 14px 18px;
-    }
-
-    .top-brand-main,
-    .top-brand-plus,
-    .top-brand-client {
-        font-size: 1rem;
-    }
-
-    .top-brand-client {
-        padding: 3px 8px;
-    }
-
-    .top-brand-show {
-        top: 16px;
-        left: 16px;
-    }
-
-    .info-panel {
-        top: 16px;
-        right: 16px;
-        padding: 14px 18px;
-        min-width: 210px;
-    }
-
-    .info-time {
-        font-size: 1.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    #orb-container {
-        width: 400px;
-        height: 400px;
+    .main-logo {
+        width: clamp(140px, 35vw, 200px);
     }
     
-    .titulo-central {
-        font-size: clamp(1.8rem, 14vw, 3rem);
-    }
-
-    .info-panel {
-        top: 12px;
-        right: 12px;
-        padding: 12px 16px;
-    }
-
-    .top-brand {
-        top: 12px;
-        left: 12px;
-        padding: 12px 16px;
+    .brand-name {
+        flex-direction: column;
         gap: 6px;
     }
-
-    .top-brand-main,
-    .top-brand-plus,
-    .top-brand-client {
-        font-size: 0.95rem;
+    
+    .brand-telecom {
+        font-size: 0.5em;
     }
-
-    .top-brand-client {
-        padding: 3px 7px;
+    
+    .clients-track {
+        gap: 40px;
     }
-
-    .top-brand-show {
-        top: 12px;
-        left: 12px;
+    
+    .client-logo {
+        height: 30px;
     }
+    
+    .config-menu {
+        width: 280px;
+    }
+}
+
+/* ==========================================
+   CURSOR AUTO-HIDE
+   ========================================== */
+body.cursor-hidden,
+body.cursor-hidden * {
+    cursor: none !important;
+}
+
+/* Elementos interativos sempre mostram cursor */
+body.cursor-hidden a,
+body.cursor-hidden button,
+body.cursor-hidden [contenteditable="true"],
+body.cursor-hidden .header-client,
+body.cursor-hidden .config-option {
+    cursor: pointer !important;
 }
