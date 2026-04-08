@@ -3,14 +3,14 @@
  * Script profissional para TV em sala de reunião
  */
 
-(function() {
+(function () {
     'use strict';
 
     // ============================================
     // CONFIGURAÇÃO
     // ============================================
     const isMobile = window.innerWidth <= 768;
-    
+
     const COLORS = {
         azulConexao: '#00249C',
         azulEstrutura: '#081535',
@@ -20,7 +20,7 @@
 
     // Lista de logos de clientes (arquivos reais)
     const CLIENT_LOGOS = [
-        '1.jpg', '2.png', '3.png', '4.png', '5.png', '6.jpg', 
+        '1.jpg', '2.png', '3.png', '4.png', '5.png', '6.jpg',
         '7.png', '8.webp', '9.png', '10.jpg', '11.jpg', '12.png',
         '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.png', '18.png',
         '19.jpg', '20.png', '21.png'
@@ -29,7 +29,7 @@
     // ============================================
     // INICIALIZAÇÃO
     // ============================================
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         initTime();
         initTemperature();
         initDate();
@@ -70,11 +70,11 @@
         if (!dateElement) return;
 
         const now = new Date();
-        const options = { 
-            weekday: 'long', 
-            day: 'numeric', 
-            month: 'long', 
-            year: 'numeric' 
+        const options = {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
         };
         const dateStr = now.toLocaleDateString('pt-BR', options);
         // Capitalize first letter
@@ -131,7 +131,7 @@
         // Adicionar logos 2x para loop contínuo
         const logos1 = createLogos();
         const logos2 = createLogos();
-        
+
         logos1.forEach(img => track.appendChild(img));
         logos2.forEach(img => track.appendChild(img));
     }
@@ -150,10 +150,10 @@
         }
 
         // Tornar editável ao clicar
-        clientElement.addEventListener('click', function() {
+        clientElement.addEventListener('click', function () {
             this.contentEditable = 'true';
             this.focus();
-            
+
             // Selecionar todo o texto
             const range = document.createRange();
             range.selectNodeContents(this);
@@ -163,7 +163,7 @@
         });
 
         // Salvar ao sair
-        clientElement.addEventListener('blur', function() {
+        clientElement.addEventListener('blur', function () {
             this.contentEditable = 'false';
             const name = this.textContent.trim() || 'Cliente';
             this.textContent = name;
@@ -171,7 +171,7 @@
         });
 
         // Enter salva
-        clientElement.addEventListener('keydown', function(e) {
+        clientElement.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this.blur();
@@ -196,9 +196,9 @@
         }
 
         // Clique para alternar
-        statusElement.addEventListener('click', function() {
+        statusElement.addEventListener('click', function () {
             const isAvailable = this.classList.contains('available');
-            
+
             if (isAvailable) {
                 this.classList.remove('available');
                 this.classList.add('busy');
@@ -231,7 +231,7 @@
 
         function rotateTagline() {
             taglineElement.style.opacity = '0';
-            
+
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % taglines.length;
                 taglineElement.textContent = taglines[currentIndex];
@@ -255,11 +255,11 @@
         const DOUBLE_TAP_DELAY = 400;
 
         // Duplo espaço para abrir/fechar
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.code === 'Space' && !e.target.isContentEditable) {
                 e.preventDefault();
                 const now = Date.now();
-                
+
                 if (now - lastSpaceTime < DOUBLE_TAP_DELAY) {
                     menu.classList.toggle('active');
                     lastSpaceTime = 0;
@@ -267,7 +267,7 @@
                     lastSpaceTime = now;
                 }
             }
-            
+
             // ESC fecha
             if (e.key === 'Escape' && menu.classList.contains('active')) {
                 menu.classList.remove('active');
@@ -299,10 +299,10 @@
         Object.entries(toggles).forEach(([checkboxId, config]) => {
             const checkbox = document.getElementById(checkboxId);
             const target = document.querySelector(config.target);
-            
+
             if (!checkbox || !target) return;
 
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 if (this.checked) {
                     target.classList.remove('hidden');
                 } else {
@@ -358,7 +358,7 @@
 
         document.addEventListener('mousemove', showCursor);
         document.addEventListener('mousedown', showCursor);
-        
+
         // Iniciar timer
         timeout = setTimeout(hideCursor, HIDE_DELAY);
     }
@@ -444,12 +444,12 @@
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            
+
             particles.forEach(p => {
                 p.update();
                 p.draw();
             });
-            
+
             drawConnections();
             animationId = requestAnimationFrame(animate);
         }
@@ -652,7 +652,7 @@
         const vs = createShader(gl.VERTEX_SHADER, vsSource);
         const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
         if (!vs || !fs) return;
-        
+
         const program = gl.createProgram();
         gl.attachShader(program, vs);
         gl.attachShader(program, fs);
@@ -660,7 +660,7 @@
         gl.useProgram(program);
 
         // Fullscreen quad
-        const positions = new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]);
+        const positions = new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]);
         const buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
@@ -686,7 +686,7 @@
 
         function render(time) {
             const t = time * 0.001 * CONFIG.speed;  // Velocidade reduzida
-            
+
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT);
 
