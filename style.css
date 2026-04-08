@@ -22,7 +22,8 @@
     --branco-soft: rgba(244, 246, 249, 0.9);
 }
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -136,8 +137,17 @@ html, body {
 }
 
 @keyframes statusPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
 }
 
 .status-text {
@@ -221,13 +231,20 @@ html, body {
     transform: translate(-50%, -50%);
     z-index: 2;
     pointer-events: none;
-    animation: floatLogo 6s ease-in-out infinite;
+    animation: floatLogo 6s infinite;
     will-change: transform;
 }
 
 @keyframes floatLogo {
-    0%, 100% { transform: translate(-50%, -50%); }
-    50% { transform: translate(-50%, calc(-50% - 15px)); }
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%);
+    }
+
+    50% {
+        transform: translate(-50%, calc(-50% - 15px));
+    }
 }
 
 .hero-bg-image {
@@ -244,12 +261,10 @@ html, body {
     transform: translate(-50%, -50%);
     width: clamp(350px, 45vw, 650px);
     height: clamp(350px, 45vw, 650px);
-    background: radial-gradient(
-        circle,
-        rgba(0, 36, 156, 0.4) 0%,
-        rgba(0, 36, 156, 0.2) 30%,
-        transparent 70%
-    );
+    background: radial-gradient(circle,
+            rgba(0, 36, 156, 0.4) 0%,
+            rgba(0, 36, 156, 0.2) 30%,
+            transparent 70%);
     border-radius: 50%;
     z-index: -1;
 }
@@ -278,12 +293,10 @@ html, body {
 .titulo-backdrop {
     position: absolute;
     inset: -30px -50px;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(8, 21, 53, 0.8) 0%,
-        rgba(8, 21, 53, 0.5) 50%,
-        transparent 80%
-    );
+    background: radial-gradient(ellipse at center,
+            rgba(8, 21, 53, 0.8) 0%,
+            rgba(8, 21, 53, 0.5) 50%,
+            transparent 80%);
     filter: blur(30px);
     z-index: -1;
     pointer-events: none;
@@ -434,20 +447,16 @@ html, body {
     flex: 1;
     overflow: hidden;
     position: relative;
-    mask-image: linear-gradient(
-        to right,
-        transparent 0%,
-        black 10%,
-        black 90%,
-        transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to right,
-        transparent 0%,
-        black 10%,
-        black 90%,
-        transparent 100%
-    );
+    mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%);
+    -webkit-mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%);
 }
 
 .clients-track {
@@ -460,8 +469,13 @@ html, body {
 }
 
 @keyframes scrollClients {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .client-logo {
@@ -506,7 +520,7 @@ html, body {
     backdrop-filter: blur(30px);
     border: 1px solid rgba(0, 36, 156, 0.3);
     border-radius: 16px;
-    box-shadow: 
+    box-shadow:
         0 25px 80px rgba(0, 0, 0, 0.5),
         0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     opacity: 0;
@@ -591,12 +605,12 @@ html, body {
     flex-shrink: 0;
 }
 
-.config-option input[type="checkbox"]:checked + .config-checkbox {
+.config-option input[type="checkbox"]:checked+.config-checkbox {
     background: var(--azul-conexao);
     border-color: var(--azul-conexao);
 }
 
-.config-option input[type="checkbox"]:checked + .config-checkbox::after {
+.config-option input[type="checkbox"]:checked+.config-checkbox::after {
     content: '';
     position: absolute;
     top: 3px;
@@ -659,11 +673,11 @@ html, body {
     .header-bar {
         padding: 0 30px;
     }
-    
+
     .clients-track {
         gap: 50px;
     }
-    
+
     .client-logo {
         height: 35px;
     }
@@ -674,36 +688,36 @@ html, body {
         height: 50px;
         padding: 0 20px;
     }
-    
+
     .header-date {
         display: none;
     }
-    
+
     .header-time {
         font-size: 1.3rem;
     }
-    
+
     .main-logo {
         width: clamp(140px, 35vw, 200px);
     }
-    
+
     .brand-name {
         flex-direction: column;
         gap: 6px;
     }
-    
+
     .brand-telecom {
         font-size: 0.5em;
     }
-    
+
     .clients-track {
         gap: 40px;
     }
-    
+
     .client-logo {
         height: 30px;
     }
-    
+
     .config-menu {
         width: 280px;
     }
