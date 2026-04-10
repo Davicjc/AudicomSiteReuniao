@@ -89,16 +89,14 @@
         const tempElement = document.getElementById('info-temp');
         if (!tempElement) return;
 
-        // Uberlândia coordinates
-        const lat = -18.9186;
-        const lon = -48.2772;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+        // Uberlândia coordinates — wttr.in (gratuito, sem chave de API)
+        const url = 'https://wttr.in/-18.9186,-48.2772?format=j1';
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                if (data.current_weather) {
-                    const temp = Math.round(data.current_weather.temperature);
+                const temp = data.current_condition?.[0]?.temp_C;
+                if (temp !== undefined) {
                     tempElement.textContent = `${temp}°C`;
                 }
             })
