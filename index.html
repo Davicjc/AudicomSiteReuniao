@@ -72,6 +72,19 @@
         </div>
     </footer>
 
+    <!-- Botão de Download Local -->
+    <button class="download-btn" id="download-btn" title="Baixar site para uso local">
+        <span class="download-btn-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+        </span>
+        <span class="download-btn-label">Baixar Site</span>
+        <span class="download-btn-progress" id="download-progress"></span>
+    </button>
+
     <!-- Assinatura discreta -->
     <a href="https://davicjc.github.io/PortfolioPessoal" target="_blank" class="signature">by davicjc</a>
 
@@ -126,12 +139,18 @@
                 <span class="config-checkbox"></span>
                 <span class="config-label">Wi-Fi QR</span>
             </label>
+            <label class="config-option">
+                <input type="checkbox" id="config-download" checked>
+                <span class="config-checkbox"></span>
+                <span class="config-label">Botão de Download</span>
+            </label>
         </div>
         <div class="config-menu-footer">
             <span class="config-hint">ESPAÇO 2x para abrir/fechar</span>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/davicjc/FooterDavicjc@main/footer_cjc.js"></script>
 </body>

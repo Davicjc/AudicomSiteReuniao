@@ -493,6 +493,122 @@ html, body {
 }
 
 /* ==========================================
+   BOTÃO DE DOWNLOAD
+   ========================================== */
+.download-btn {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px 10px 14px;
+    background: rgba(0, 36, 156, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 80, 214, 0.4);
+    border-radius: 50px;
+    color: var(--branco-tecnico);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 4px 20px rgba(0, 36, 156, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    overflow: hidden;
+}
+
+.download-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 50, 214, 0.4) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.download-btn:hover::before {
+    opacity: 1;
+}
+
+.download-btn:hover {
+    background: rgba(0, 36, 156, 0.45);
+    border-color: rgba(0, 100, 255, 0.6);
+    box-shadow:
+        0 8px 30px rgba(0, 36, 156, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    transform: translateY(-2px);
+}
+
+.download-btn:active {
+    transform: translateY(0px) scale(0.98);
+}
+
+.download-btn.downloading {
+    pointer-events: none;
+    border-color: rgba(0, 200, 120, 0.5);
+    background: rgba(0, 80, 40, 0.3);
+    animation: downloadPulse 1.5s ease-in-out infinite;
+}
+
+.download-btn.done {
+    border-color: rgba(34, 197, 94, 0.6);
+    background: rgba(0, 80, 40, 0.3);
+    animation: none;
+}
+
+@keyframes downloadPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(0, 180, 100, 0.2); }
+    50% { box-shadow: 0 4px 30px rgba(0, 180, 100, 0.5); }
+}
+
+.download-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.download-btn:hover .download-btn-icon {
+    transform: translateY(2px);
+}
+
+.download-btn.downloading .download-btn-icon svg {
+    animation: bounceDown 0.8s ease-in-out infinite;
+}
+
+@keyframes bounceDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+}
+
+.download-btn-label {
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+}
+
+.download-btn-progress {
+    font-size: 0.7rem;
+    color: rgba(143, 153, 168, 0.8);
+    font-family: 'Space Grotesk', sans-serif;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+/* ==========================================
    CONFIG MENU
    ========================================== */
 .config-menu {

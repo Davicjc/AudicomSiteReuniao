@@ -41,6 +41,7 @@
         initOrb();
         initRoomStatus();
         initTaglineRotation();
+        initDownloadButton();
         loadSavedSettings();
     });
 
@@ -293,7 +294,8 @@
             'config-fiber': { target: '#fiber-canvas', key: 'fiber' },
             'config-status': { target: '#room-status', key: 'status' },
             'config-tagline': { target: '#tagline', key: 'tagline' },
-            'config-wifi': { target: '.wifi-qr', key: 'wifi' }
+            'config-wifi': { target: '.wifi-qr', key: 'wifi' },
+            'config-download': { target: '#download-btn', key: 'download' }
         };
 
         Object.entries(toggles).forEach(([checkboxId, config]) => {
@@ -457,6 +459,120 @@
         resize();
         window.addEventListener('resize', resize);
         animate();
+    }
+
+    // ============================================
+    // BOTÃO DE DOWNLOAD LOCAL
+    // ============================================
+    function initDownloadButton() {
+        const btn = document.getElementById('download-btn');
+        const progressLabel = document.getElementById('download-progress');
+        if (!btn) return;
+
+        // Repositório no GitHub
+        const GITHUB_USER = 'Davicjc';
+        const GITHUB_REPO = 'AudicomSiteReuniao';
+        const GITHUB_BRANCH = 'main';
+        const GITHUB_API = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`;
+        const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/`;
+
+        // Arquivos a ignorar no download
+        const IGNORE_PATTERNS = ['.git', 'CNAME', '.gitignore'];
+
+        btn.addEventListener('click', async function() {
+            if (btn.classList.contains('downloading')) return;
+
+            btn.classList.add('downloading');
+            const labelEl = btn.querySelector('.download-btn-label');
+            const origLabel = labelEl.textContent;
+            labelEl.textContent = 'Baixando...';
+            progressLabel.textContent = '';
+
+            try {
+                // 1. Buscar lista de arquivos via GitHub API
+                progressLabel.textContent = 'Buscando arquivos...';
+                const treeRes = await fetch(GITHUB_API);
+                if (!treeRes.ok) throw new Error('Falha ao acessar o repositório');
+                const treeData = await treeRes.json();
+
+                // Filtrar apenas arquivos (blobs) e excluir padrões ignorados
+                const files = treeData.tree.filter(item =>
+                    item.type === 'blob' &&
+                    !IGNORE_PATTERNS.some(p => item.path.startsWith(p))
+                );
+
+                // 2. Criar ZIP com JSZip
+                if (typeof JSZip === 'undefined') {
+                    throw new Error('JSZip não carregado. Verifique a conexão.');
+                }
+                const zip = new JSZip();
+
+                // 3. Baixar cada arquivo
+                let done = 0;
+                const total = files.length;
+                const CONCURRENCY = 4;
+
+                async function fetchFile(file) {
+                    const url = RAW_BASE + file.path;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Falha: ${file.path}`);
+
+                    // Binaries cheios
+                    const ext = file.path.split('.').pop().toLowerCase();
+                    const binaryExts = ['png','jpg','jpeg','webp','gif','ico','svg','woff','woff2','ttf','eot'];
+                    let content;
+                    if (binaryExts.includes(ext)) {
+                        content = await res.arrayBuffer();
+                    } else {
+                        content = await res.text();
+                    }
+
+                    zip.file(file.path, content);
+                    done++;
+                    progressLabel.textContent = `${done}/${total}`;
+                }
+
+                // Processar em lotes de CONCURRENCY
+                for (let i = 0; i < files.length; i += CONCURRENCY) {
+                    const batch = files.slice(i, i + CONCURRENCY);
+                    await Promise.all(batch.map(fetchFile));
+                }
+
+                // 4. Gerar e baixar o ZIP
+                progressLabel.textContent = 'Compactando...';
+                const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `AudicomSiteReuniao-local.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Sucesso
+                btn.classList.remove('downloading');
+                btn.classList.add('done');
+                labelEl.textContent = 'Download Pronto!';
+                progressLabel.textContent = `✓ ${total} arquivos`;
+
+                // Resetar após 4s
+                setTimeout(() => {
+                    btn.classList.remove('done');
+                    labelEl.textContent = origLabel;
+                    progressLabel.textContent = '';
+                }, 4000);
+
+            } catch (err) {
+                console.error('Erro no download:', err);
+                btn.classList.remove('downloading');
+                labelEl.textContent = 'Erro - Tente novamente';
+                progressLabel.textContent = '';
+                setTimeout(() => {
+                    labelEl.textContent = origLabel;
+                }, 3000);
+            }
+        });
     }
 
     // ============================================
